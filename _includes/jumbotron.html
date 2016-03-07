@@ -1,0 +1,16 @@
+<div class="jumbotron jumbotron-fluid"{% if post.image %} style="background-image: url({{ post.image | prepend: "/images/background/" }});"{% endif %}>
+  <div class="container">
+    <h1 class="sr-only">Latest blog post</h1>
+    <h2 class="display-5">
+      <a href="{{ post.url }}">{{ post.title }}</a>
+    </h2>
+
+    <time>{{ post.date | date: "%b %-d, %Y" }}</time>
+    • <a href="{{ post.url | prepend: site.url }}#disqus_thread"></a>
+
+    <p class="lead">{{ post.excerpt }}</p>
+    <p class="lead">
+      <a class="btn btn-primary btn-lg" href="{{ post.url }}" role="button">Read more...</a>
+    </p>
+  </div>
+</div>

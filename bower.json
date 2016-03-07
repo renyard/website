@@ -1,0 +1,11 @@
+{
+  "name": "renyard.co.uk",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "5765395": "https://gist.github.com/5765395.git",
+    "jquery": "~2.2.1",
+    "bootstrap": "v4.0.0-alpha.2",
+    "font-awesome": "~4.5.0"
+  }
+}

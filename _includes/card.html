@@ -1,0 +1,16 @@
+<div class="card">
+  {% if image %}
+    <img class="card-img-top" data-src="{{ image }}" alt="Card image cap">
+  {% endif %}
+  <div class="card-block">
+    <h4 class="card-title">
+      <a href="{{ url }}">{{ title }}</a>
+    </h4>
+    {% if date %}
+      <time>{{ date | date: "%b %-d, %Y" }}</time>
+    {% endif %}
+    {% if excerpt %}
+      <p class="card-text">{{ excerpt }}</p>
+    {% endif %}
+  </div>
+</div>

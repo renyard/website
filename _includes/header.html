@@ -1,0 +1,26 @@
+<header class="container">
+
+  <nav class="navbar navbar-full navbar-dark bg-inverse">
+    <a class="navbar-brand" href="/">{{ site.title }}</a>
+
+    <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#navCollapse">
+      &#9776;
+    </button>
+    <ul class="nav navbar-nav collapse navbar-toggleable-xs" id="navCollapse">
+      {% for my_page in site.pages %}
+        {% if my_page.title %}
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ my_page.url | prepend: site.baseurl }}">{{ my_page.title }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+      {% comment %}
+      <form class="form-inline pull-xs-right">
+        <input class="form-control" type="text" placeholder="Search">
+        <button class="btn btn-success-outline" type="submit">Search</button>
+      </form>
+      {% endcomment %}
+    </ul>
+  </nav>
+
+</header>
