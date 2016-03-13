@@ -11,22 +11,4 @@
 
 	<link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
 	<link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">
-
-	{% if page.image %}
-	<style>
-		.page-bg {
-			background: url({{page.image | prepend: '/images/'}});
-			background-size: cover;
-		}
-
-		@media only screen and (-webkit-min-device-pixel-ratio: 1.5),
-		only screen and (-moz-min-device-pixel-ratio: 1.5),
-		only screen and (-o-min-device-pixel-ratio: 3/2),
-		only screen and (min-device-pixel-ratio: 1.5) {
-			.icons {
-				background-image: url(icon-sprite-2x.png);
-			}
-		}
-	</style>
-	{% endif %}
 </head>
