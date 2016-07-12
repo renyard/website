@@ -4,8 +4,11 @@
   "private": true,
   "dependencies": {
     "5765395": "https://gist.github.com/5765395.git",
-    "jquery": "~2.2.1",
-    "bootstrap": "v4.0.0-alpha.2",
+    "jquery": "3.1.0",
+    "bootstrap": "v4-dev",
     "font-awesome": "~4.5.0"
+  },
+  "resolutions": {
+    "jquery": "1.9.1 - 3"
   }
 }
