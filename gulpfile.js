@@ -4,6 +4,7 @@ var gulp = require('gulp'),
     del = require('del'),
     concat = require('gulp-concat'),
     browserSync = require('browser-sync').create(),
+    babel = require('gulp-babel'),
     uglify = require('gulp-uglify'),
     sass = require('gulp-sass'),
     cssmin = require('gulp-cssmin'),
@@ -32,6 +33,12 @@ gulp.task('js', ['clean'], () => {
         'bower_components/jquery/dist/jquery.min.js',
         'bower_components/bootstrap/dist/js/bootstrap.js'
     ])
+    .pipe(uglify())
+    .pipe(concat('lib.min.js'))
+    .pipe(gulp.dest('dist/js/'));
+
+    gulp.src(['js/main.js'])
+    .pipe(babel())
     .pipe(uglify())
     .pipe(concat('main.min.js'))
     .pipe(gulp.dest('dist/js/'));
@@ -89,7 +96,9 @@ gulp.task('watch', ['clean', 'default'], () => {
     gulp.watch([
         '**/*.{js,css,md,html,scss}',
         '!lib/**/*',
-        '!dist/**/*'
+        '!dist/**/*',
+        '!node_modules/**/*',
+        '!bower_components/**/*'
     ], ['jekyll'], browserSync.reload);
 });
 

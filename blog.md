@@ -1,5 +1,8 @@
 ---
 layout: page
+title: Blog
+permalink: /blog/
+hidetitle: true
 ---
 
 {% assign post = site.posts | first %}

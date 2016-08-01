@@ -44,12 +44,87 @@ footer {
     margin-top: 1rem;
 }
 
+// Header
+
+// header .navbar {
+//     position: fixed;
+//     width: 100%;
+//     left: 50%;
+//     transform: translateX(-50%);
+//     opacity: 0.8;
+//     z-index: 1;
+    
+//     @media (min-width: 992px) {
+//         max-width: 910px;
+//     }
+// }
+
+// Home Page
+
+#home h2 .subhead {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 1.5rem;
+}
+
+#home .jumbotron h1,
+#home .jumbotron h2 {
+    text-align: center;
+}
+
+#home ul.horizontal-list {
+    padding: 0;
+    margin-left: 1em;
+    text-align: center;
+}
+
+#home ul.horizontal-list li {
+    display: inline-block;
+    margin-right: 1em;
+}
+
+ul.horizontal-list li:first-child {
+    // margin-left: 0;
+}
+
+#home .jumbotron {
+    background-position: center;
+}
+
+#home .list-group:last-child {
+    margin-bottom: 32px;
+}
+
+// Fix borders on single column lists.
+@media (max-width: 543px) {
+    #home .row .col-sm-6:first-child .list-group-item:last-child {
+        border-radius: 0;
+    }
+
+    #home .row .col-sm-6:last-child {
+        padding-right: 0;
+        
+        .list-group-item:first-child {
+            border-top: 0;
+            border-radius: 0;
+        }
+    }
+}
+
+#home .list-group .fa {
+    width: 18px;
+    background-position: center center;
+}
+
+// Blog.
+
 .jumbotron .container {
     background-color: rgba(236, 238, 239, 0.8);
     padding-top: 1rem;
 }
 
-.jumbotron, .postimage {
+.jumbotron,
+.postimage {
     background-size: cover;
     background-position: 0;
 }
