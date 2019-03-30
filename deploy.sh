@@ -1,6 +1,6 @@
 #!/bin/bash
 rm -rf dist/ || exit 0;
-gulp
+npx gulp
 
 ( cd dist/
   git init
