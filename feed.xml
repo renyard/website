@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ian Renyard</title>
+    <description></description>
+    <link>https://www.renyard.co.uk/</link>
+    <atom:link href="https://www.renyard.co.uk/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Fri, 05 Apr 2019 21:32:11 +0100</pubDate>
+    <lastBuildDate>Fri, 05 Apr 2019 21:32:11 +0100</lastBuildDate>
+    <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title>SSL on GitHub Pages with CloudFlare</title>
+        <description>&lt;p&gt;With online security constantly in the news and more and more web services moving to secure connections only, users are starting to expect sites to offer SSL as a default. For sites which request user data or payment information, the need for security is obvious, but to a lesser extent it’s also advantageous for static sites and blogs.&lt;/p&gt;
+
+&lt;h2 id=&quot;why-use-ssl-for-static-sites&quot;&gt;Why Use SSL For Static Sites?&lt;/h2&gt;
+
+&lt;p&gt;If your site is not requesting user data or payment information, the main advantage to implementing SSL is to mitigate the risk of man in the middle attacks. Even for a static site, there are risks to being open to a MITM attack.&lt;/p&gt;
+
+&lt;p&gt;A MITM has the ability to add arbitrary code to your site. This technique can (and has) been used by WiFi providers, mobile carriers and internet service providers to include ads, promotional messaging or user tracking on third party sites. With SSL enabled, it is not possible for the MITM to make changes to the code delivered to the user’s browser.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-options-are-available-for-ssl-on-github-pages&quot;&gt;What Options Are Available For SSL on GitHub Pages?&lt;/h2&gt;
+
+&lt;p&gt;Out of the box, sites hosted on GitHub Pages can be loaded over HTTPS, but will only present a valid certificate when being served over the &lt;em&gt;username&lt;/em&gt;.github.io domain. If you’re using a custom domain, you’ll need another solution.&lt;/p&gt;
+
+&lt;p&gt;For this site, I’ve used &lt;a href=&quot;https://cloudflare.com&quot;&gt;CloudFlare&lt;/a&gt; to host my DNS and provide CDN facilities. As part of this they also offer SSL between them and the end user. This means CloudFlare will fetch the files from your site insecurely over HTTP or over HTTPS without validating the github.io certificate and serve them to your users over a trusted SSL connection.&lt;/p&gt;
+
+&lt;h2 id=&quot;setup&quot;&gt;Setup&lt;/h2&gt;
+
+&lt;p&gt;Once you’ve added your domain to your CloudFlare account, enabling SSL is as simple as switching it on in the crypto area of the account dashboard. There are several options, but for GitHub Pages based sites which cannot serve a valid certificate for your domain, the “Full” option will give you the best balance of security and functionality.&lt;/p&gt;
+
+&lt;h2 id=&quot;pros-and-cons-of-this-setup&quot;&gt;Pros and Cons of this Setup&lt;/h2&gt;
+
+&lt;p&gt;It should be noted that this setup doesn’t provide full end-to-end encryption between the user and your site, meaning that the connection between CloudFlare and your site should not be considered secure. Therefore this is not suitable for any site that requests user data or logins, but on static GitHub Pages sites, this shouldn’t be a problem.&lt;/p&gt;
+
+&lt;p&gt;For static sites though, I’d say this trade off is preferable to having no SSL at all. It provides a level of trust that the page has not been tampered with and provides protection at the stage where a MITM is most likely to be situated.&lt;/p&gt;
+
+&lt;p&gt;Browser support is another area that you should be aware of before implementing CloudFlare’s SSL. The certificates provided on the free tier do not support many older browsers, including Internet Explorer on Windows XP and any Android device older than Ice Cream Sandwich. This roughly means that any major browser released since 2010 should be fine. Depending on your userbase and browser support policy, this may or may not be acceptable.&lt;/p&gt;
+
+&lt;p&gt;While this setup is not going to be suitable for all sites, it’s a quick, easy and free way to implement basic SSL for a small blog or static site and is ideal for sites hosted on GitHub Pages.&lt;/p&gt;
+</description>
+        <pubDate>Sun, 13 Mar 2016 00:00:00 +0000</pubDate>
+        <link>https://www.renyard.co.uk/2016/03/github-pages-cloudflare-ssl.html</link>
+        <guid isPermaLink="true">https://www.renyard.co.uk/2016/03/github-pages-cloudflare-ssl.html</guid>
+        
+        
+        <category>github</category>
+        
+        <category>ssl</category>
+        
+      </item>
+    
+      <item>
+        <title>Multiple Checkouts With Git Worktree</title>
+        <description>&lt;p&gt;I regularly find the need to switch branches in my local Git repos for code reviews or to work on another feature or bug within a project. In the past, I would have either cloned a new copy of the repo or stashed any changes which were not ready to commit. Neither of these is ideal as a new copy is wasteful, as checking out a large repo can take a while and stashing changes is quite disruptive to your current context.&lt;/p&gt;
+
+&lt;h2 id=&quot;worktree&quot;&gt;Worktree&lt;/h2&gt;
+
+&lt;p&gt;Git 2.5 introduced the &lt;code class=&quot;highlighter-rouge&quot;&gt;worktree&lt;/code&gt; command, which can be used to checkout multiple working trees from the same local repo. In short this gives you as many different branches as you like checked out to multiple directories at the same time, all pointing to the same local Git repo. This means no wasting disk space on multiple copies of Git meta data and best of all, each worktree is instantly aware of any changes committed from another worktree.&lt;/p&gt;
+
+&lt;h3 id=&quot;usage&quot;&gt;Usage&lt;/h3&gt;
+
+&lt;h4 id=&quot;code-reviews&quot;&gt;Code Reviews&lt;/h4&gt;
+
+&lt;p&gt;For this example, let’s assume the original checkout is on a feature branch that I’m working on and a colleague asks me to review a feature before it’s merged.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git worktree add newfeature -b newfeature origin/newfeature
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This will create a new directory &lt;code class=&quot;highlighter-rouge&quot;&gt;newfeature&lt;/code&gt; in the root of the existing repo, containing the &lt;code class=&quot;highlighter-rouge&quot;&gt;newfeature&lt;/code&gt; branch from origin. At this point, the new feature can be reviewed without loosing the context of the &lt;code class=&quot;highlighter-rouge&quot;&gt;develop&lt;/code&gt; branch or even any open files.&lt;/p&gt;
+
+&lt;p&gt;Once the review is complete, the &lt;code class=&quot;highlighter-rouge&quot;&gt;newfeature&lt;/code&gt; directory can be deleted and the worktree pruned:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ rm -rf newfeature
+$ git worktree prune
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;bug-fixing&quot;&gt;Bug Fixing&lt;/h4&gt;
+
+&lt;p&gt;For me, the other major use case of the &lt;code class=&quot;highlighter-rouge&quot;&gt;worktree&lt;/code&gt; command is for bug fixing. In the following example, the original checkout is on a feature branch and we want to start a new branch for a bugfix:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git worktree add bugfix -b bugfix develop
+$ cd bugfix
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In this command, a new directory called &lt;code class=&quot;highlighter-rouge&quot;&gt;bugfix&lt;/code&gt; is created on a new branch with the same name. The last parameter tells Git to base the new branch on the existing &lt;code class=&quot;highlighter-rouge&quot;&gt;develop&lt;/code&gt; branch.&lt;/p&gt;
+
+&lt;p&gt;We then cd into the bugfix directory and can implement the bug fix. Once the bugfix is committed, the branch is ready to be merged back to &lt;code class=&quot;highlighter-rouge&quot;&gt;develop&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git commit -a
+$ git checkout develop
+$ git merge bugfix
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The worktree can then be removed and the branch deleted:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git branch -d bugfix
+$ cd ../
+$ rm -rf bugfix
+$ git worktree prune
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;At the time of writing, &lt;code class=&quot;highlighter-rouge&quot;&gt;worktree&lt;/code&gt; is still quite new and as such is considered experimental. It also does not yet support the full functionality of Git, such as &lt;code class=&quot;highlighter-rouge&quot;&gt;submodules&lt;/code&gt;, in multiple checkouts and the &lt;a href=&quot;https://git-scm.com/docs/git-worktree/2.7.0#_bugs&quot;&gt;documentation suggests a few features which could be added in the future&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Even with the above limitations, &lt;code class=&quot;highlighter-rouge&quot;&gt;worktree&lt;/code&gt; can be useful when a quick fix needs to be made or for reviewing another branch.&lt;/p&gt;
+</description>
+        <pubDate>Fri, 05 Feb 2016 00:00:00 +0000</pubDate>
+        <link>https://www.renyard.co.uk/2016/02/multiple-checkouts-with-git-worktree.html</link>
+        <guid isPermaLink="true">https://www.renyard.co.uk/2016/02/multiple-checkouts-with-git-worktree.html</guid>
+        
+        
+        <category>git</category>
+        
+      </item>
+    
+      <item>
+        <title>HTML5 Developer Support and Challenges Conference Talk</title>
+        <description>&lt;p&gt;On 3rd July 2015, I gave a conference talk, along with &lt;a href=&quot;http://www.walkabout.xyz&quot;&gt;Andrea Fassina&lt;/a&gt; at the &lt;a href=&quot;http://malideveloper.arm.com/engage-with-mali/events/arms-html5-workshop/&quot;&gt;ARM’s Embedded HTML5 Workshop&lt;/a&gt; at &lt;a href=&quot;http://www.dtg.org.uk/&quot;&gt;DTG&lt;/a&gt; in Vauxhall, London.&lt;/p&gt;
+
+&lt;p&gt;In the presentation, Andrea explained our approach to securely enabling app development on production set top boxes at &lt;a href=&quot;http://www.youview.com&quot;&gt;YouView&lt;/a&gt; and an investigation into the performance of various Javascript libraries and frameworks on YouView devices. I then talked through the findings of our investigation into speeding up the launch times of HTML5 apps on the platform and gave some general best practices for app development.&lt;/p&gt;
+
+&lt;iframe src=&quot;https://docs.google.com/presentation/d/1HATr8wy5g52EvQ1X2YZHuxyrzteBLUw1NEUbhzHxOD0/embed?start=false&amp;amp;loop=false&amp;amp;delayms=60000&quot; frameborder=&quot;0&quot; width=&quot;480&quot; height=&quot;389&quot; allowfullscreen=&quot;true&quot; mozallowfullscreen=&quot;true&quot; webkitallowfullscreen=&quot;true&quot; style=&quot;display: block; margin: auto;&quot;&gt;&lt;/iframe&gt;
+</description>
+        <pubDate>Sun, 05 Jul 2015 02:40:37 +0100</pubDate>
+        <link>https://www.renyard.co.uk/2015/07/embedded-html5-support-and-challenges-talk.html</link>
+        <guid isPermaLink="true">https://www.renyard.co.uk/2015/07/embedded-html5-support-and-challenges-talk.html</guid>
+        
+        
+        <category>conference-talks</category>
+        
+      </item>
+    
+      <item>
+        <title>Thoughts on the State of Smart Watches</title>
+        <description>&lt;p&gt;With the &lt;a href=&quot;http://www.apple.com/uk/watch/&quot;&gt;Apple Watch&lt;/a&gt; now in the wild and the &lt;a href=&quot;https://www.android.com/wear/&quot;&gt;Android Wear&lt;/a&gt; and &lt;a href=&quot;https://getpebble.com&quot;&gt;Pebble&lt;/a&gt; platforms maturing, the market for wearable technology is getting interesting. The big question is, are these devices ready for prime time?&lt;/p&gt;
+
+&lt;h2 id=&quot;killer-app&quot;&gt;Killer App&lt;/h2&gt;
+
+&lt;p&gt;Most of the major mobile apps and services now support some of all of the smart watch platforms to a greater or lesser extent. Music apps provide controls on your wrist, messages can be viewed and replied to and fitness apps can measure your vital statistics.&lt;/p&gt;
+
+&lt;p&gt;One of the most useful features though, is navigation. On a phone, directions are great and navigation works well for driving. But on foot, repeatedly pulling your phone out to check that you’re on the right track can get annoying. Being able to quickly check on your wrist and receive feedback when it’s time to get off the bus or train is like having a sat nav on your wrist.&lt;/p&gt;
+
+&lt;h2 id=&quot;design&quot;&gt;Design&lt;/h2&gt;
+
+&lt;p&gt;Android Wear, in particular, has a wide variety of hardware styles, from the beautiful &lt;a href=&quot;https://moto360.motorola.com/&quot;&gt;Moto 360&lt;/a&gt; and &lt;a href=&quot;http://www.lg.com/us/smartwatch/urbane&quot;&gt;LG Watch Urbane&lt;/a&gt; to the downright &lt;a href=&quot;http://www.urbandictionary.com/define.php?term=Fugly&quot;&gt;fugly&lt;/a&gt; &lt;a href=&quot;http://www.sonymobile.com/gb/products/smartwear/smartwatch-3-swr50/&quot;&gt;Sony Smart Watch&lt;/a&gt; and &lt;a href=&quot;http://www.samsung.com/global/microsite/gear/gearlive_design.html&quot;&gt;Samsung Gear Live&lt;/a&gt;. The initial crop of devices seemed to miss the fact that most people who would spend £250 on a watch are looking to buy a piece of jewellery at least equally against functionality. Maybe the balance is a little more on the functionality side than most mechanical  watches, but it should at least look a little better than something you could pick up for less than a tenner in Argos.&lt;/p&gt;
+
+&lt;h3 id=&quot;why-round&quot;&gt;Why Round?&lt;/h3&gt;
+
+&lt;p&gt;Most of the smart watches so far have sported a square face and case, but it seems this was a major complaint in the aesthetics of the original Android Wear line up. This only added to the surprise at Apple’s rounded square design. However, here Apple, Samsung and Sony have realised that text and images on a screen are better served when they don’t have all four corners lopped off. I think the practicality will mean smart watches will end up being far more common in square designs, although the designers will have to work harder to get the classic and elegant look of a traditional watch. Round designs are essentially a legacy of the mechanical age.&lt;/p&gt;
+
+&lt;h2 id=&quot;longevity&quot;&gt;Longevity&lt;/h2&gt;
+
+&lt;p&gt;Finally, the big elephant in the room for traditional luxury watch brands entering the smart wearables market is the longevity of the device. Nobody buys a Rolex, a Tag Hueur or a Longiness expecting it to be obsoleted and disposed of 2 years down the line. In fact, they more likely expect to hand it down to their grand kids in 50 years, only to be told that the touch screen doesn’t work as they try and swipe away the watch face!&lt;/p&gt;
+
+&lt;p&gt;Some have attempted to address the issue by being able to swap out and upgrade the innards. Once the market settles a little, I think this may be the answer, but in the short term I’d be worried that dropping version one may be tempting once the manufacturer has evolved the product a little.&lt;/p&gt;
+
+&lt;h2 id=&quot;future&quot;&gt;Future&lt;/h2&gt;
+
+&lt;p&gt;Looking forward, I’m excited to see what the watch makers, rather than the technology giants bring to the table and how they address the current shortcomings. In particular &lt;a href=&quot;http://www.fossil.co.uk/&quot;&gt;Fossil&lt;/a&gt; are expected to launch something this year, as are &lt;a href=&quot;http://www.tagheuer.co.uk/&quot;&gt;Tag Hueur&lt;/a&gt;, who will be one of the first traditional luxury watch brands to enter the market.&lt;/p&gt;
+
+&lt;p&gt;Ultimately, right now, I’d have to say that the market is so new that consumer who currently enters it is a paying beta tester and it’s not out of fad territory just yet. Designs, interfaces and functionality are all evolving quickly and it’s going to be fascinating to see which direction they take and if the mainstream market can be maintained.&lt;/p&gt;
+</description>
+        <pubDate>Mon, 29 Jun 2015 00:00:00 +0100</pubDate>
+        <link>https://www.renyard.co.uk/2015/06/thoughts-on-the-state-of-smart-watches.html</link>
+        <guid isPermaLink="true">https://www.renyard.co.uk/2015/06/thoughts-on-the-state-of-smart-watches.html</guid>
+        
+        
+        <category>devices</category>
+        
+        <category>watches</category>
+        
+        <category>jewellery</category>
+        
+      </item>
+    
+      <item>
+        <title>The Case Against IE Specific Stylesheets</title>
+        <description>&lt;p&gt;In all but the most basic of web site designs developers will invariably encounter situations where Internet Explorer requires a good kick in the CSS before it’ll render the page in the desired way.  Often, a quick fix is applied in the shape of an IE specific external stylesheet, hidden from other browsers with conditional comments:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;!--[if IE]&amp;gt;&amp;lt;link href=&quot;ie.css&quot; type=&quot;text/css&quot; rel=&quot;stylesheet&quot; /&amp;gt;&amp;lt;![endif]--&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This does the job, but there are a number of down sides to this approach, which in my opinion, make it the wrong choice in many circumstances for both user experience and code maintainability.&lt;/p&gt;
+
+&lt;p&gt;The main reasons for using conditional stylesheets are to avoid CSS hacks and create a smaller code footprint for standards compliant browsers.  But are these really problems that need fixing?&lt;/p&gt;
+
+&lt;h2 id=&quot;validation&quot;&gt;Validation&lt;/h2&gt;
+
+&lt;p&gt;HTML validation is good practice, mainly due to a loss in semantic meaning as well as the lack of consistency with regard to error handling in the standards and implementations.  However, CSS is purely presentational and does not convey any semantic meaning.  Furthermore, the original CSS standard defines strict parsing rules which dictate exactly how to deal with invalid rules.  Well tested and widely used hacks such as the * and _ hacks are extremely unlikely to cause problems in standards compliant browsers.&lt;/p&gt;
+
+&lt;p&gt;Invalid CSS hidden from modern browsers and the validator is still just that - invalid CSS.  Hiding invalid code within conditional comments does not make it valid, it merely prevents subsets of the code from being validated.&lt;/p&gt;
+
+&lt;h2 id=&quot;performance&quot;&gt;Performance&lt;/h2&gt;
+
+&lt;p&gt;While standards compliant browsers will be spared the IE specific rules in conditional stylesheets, Internet Explorer users will incur code bloat, in the shape of duplicated selectors, as well as an extra HTTP request.  This extra request may also delay the loading of other resources on the page as IE7 and below will only download 2 resources in parallel (http://support.microsoft.com/kb/282402).&lt;/p&gt;
+
+&lt;p&gt;If these hacks are included in the main stylesheet, standards compliant browsers will take a small hit in terms of download size, but with a bit of care this should be negligible.  However, Internet Explorer users, the majority for most sites, will see a small benefit.&lt;/p&gt;
+
+&lt;h2 id=&quot;maintainability&quot;&gt;Maintainability&lt;/h2&gt;
+
+&lt;p&gt;For the developer, IE specific stylesheets can cause issues when trying to trace the origin of CSS rules applied to a particular element. I tend to use Chrome’s developer tools to quickly trace the rule back to file and line number, but this method quickly leads to a wild goose chase when IE specific styles come into play. Including IE specific rules side by side with other rules makes it immediatly obvious where they are used and enables the use of any dev tool, such as Chrome or Firebug’s DOM inspector, to trace the origin of a particular rule.  I also use comments to make it even clearer what rule the hack is emulating as below:&lt;/p&gt;
+
+&lt;div class=&quot;language-css highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;#container&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nl&quot;&gt;min-height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;150px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;/*min*/&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;_height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;150px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;After dropping IE specific stylesheets in favour of the * and _ hacks for my last few projects, I see fewer and fewer compelling reasons to go back to the so called good practice of IE specific styles.  In fact, I find IE specific stylesheets encourage bad practice - when faced with a rather empty looking, I am tempted to add a quick hack to it rather than tackle the real problem!&lt;/p&gt;
+</description>
+        <pubDate>Wed, 30 Jun 2010 09:11:34 +0100</pubDate>
+        <link>https://www.renyard.co.uk/2010/06/the-case-against-ie-specific-stylesheets.html</link>
+        <guid isPermaLink="true">https://www.renyard.co.uk/2010/06/the-case-against-ie-specific-stylesheets.html</guid>
+        
+        <category>CSS</category>
+        
+        <category>hacks</category>
+        
+        <category>Internet Explorer</category>
+        
+        <category>trident</category>
+        
+        <category>validation</category>
+        
+        <category>w3c</category>
+        
+        
+        <category>CSS</category>
+        
+        <category>Hacks</category>
+        
+      </item>
+    
+      <item>
+        <title>In Defense of IE6</title>
+        <description>&lt;p&gt;Hang on a moment, just double checking that title! Internet Explorer 6? Defence?&lt;/p&gt;
+
+&lt;p&gt;I’m sure most developers have been extremely keen to drop support for IE6 for years. I hate to think how many hours I’ve spent trying to work my way around it’s many foibles. But, in recent months, the debate about when we can finally drop support for the devil’s own browser has been raging on sites such as &lt;a href=&quot;http://www.netmag.co.uk/&quot;&gt;.net magazine’s&lt;/a&gt; &lt;a href=&quot;http://www.bringdownie6.com/&quot;&gt;Bring Down IE6&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;One of the main accusations against IE6 is that it’s stranglehold on the browser market has been holding back the development of the web, but I’m not so sure it’s that straight forward. I don’t think anyone could deny that IE6’s ubiquity has made it more difficult to take advantage of many of the innovations, both in standards such as &lt;a href=&quot;http://www.css3.info/&quot;&gt;CSS3&lt;/a&gt;, or from particular browser’s proprietary features, such as &lt;a href=&quot;http://en.wikipedia.org/wiki/Canvas_%28HTML_element%29&quot;&gt;canvas&lt;/a&gt;, which have been embraced by other vendors and standards bodies. But would it have been much better had IE6 disappeared years ago? Many of these features are still not supported by any version of IE to this day.&lt;/p&gt;
+
+&lt;p&gt;Microsoft has however supported a variety of it’s own proprietary features, many as far back as IE5.5, some of which have only just started to appear across other browsers. While the syntax is often rather long winded, Microsoft’s CSS filters have plugged many of the gaps in IE’s standards support, particularly with regard to opacity and &lt;a href=&quot;http://www.3doughnuts.com/2009/06/css-3-rgba-colour-support/&quot;&gt;RGBa background colours&lt;/a&gt;.  IE5.5 also introduced &lt;a href=&quot;http://msdn.microsoft.com/en-us/library/ms531186%28VS.85%29.aspx&quot;&gt;word-wrap&lt;/a&gt;, which probably should have been part of CSS from the start, but has only just been introduced by Mozilla in the &lt;a href=&quot;http://www.getfirefox.com/&quot;&gt;Firefox 3.5&lt;/a&gt;!&lt;/p&gt;
+
+&lt;p&gt;In the past five years or so, &lt;a href=&quot;http://en.wikipedia.org/wiki/XMLHttpRequest&quot;&gt;XMLHttpRequest&lt;/a&gt; has, quite rightly, gained popularity for it’s ability to easily fetch data from the server while remaining on the same page. Whether we like to admit it or not, we have Microsoft to thank for that, the ActiveX object was developed for Outlook Web Access in Exchange and introduced in IE5 in 1999! Fully functional implementations of XMLHttpRequest only started to become available in other browsers in 2002.&lt;/p&gt;
+
+&lt;p&gt;Internet Explorer 6 does have some serious rendering bugs and, compared to modern browsers, it is very slow in rendering and javascript execution. However, IE6 is about 8 years old and while other browsers have pushed forward the client side technologies available to developers since then, IE6 has, in many cases, had it’s own features which can be used, or hacked, to provide similar functionality. Maybe we should not be judging it by modern standards.&lt;/p&gt;
+
+&lt;p&gt;While nobody enjoys coding for IE6, without Microsoft’s innovations around Internet Explorer in the late 1990s, I think the situation would be much worse. If it wasn’t for features such as XMLHttpRequest, IE6’s domination would certainly have strangled innovation in client side development to a much greater extent. So maybe, rather than pouring scorn on IE6 at every opportunity, we should instead celebrate what, at the time, were innovative features and count ourselves lucky while we endure it’s slow demise.&lt;/p&gt;
+
+&lt;p&gt;…erm, I mean - BRING DOWN IE6!&lt;/p&gt;
+</description>
+        <pubDate>Tue, 14 Jul 2009 23:14:26 +0100</pubDate>
+        <link>https://www.renyard.co.uk/2009/07/in-defense-of-ie6.html</link>
+        <guid isPermaLink="true">https://www.renyard.co.uk/2009/07/in-defense-of-ie6.html</guid>
+        
+        <category>browser support</category>
+        
+        <category>ie6</category>
+        
+        <category>Internet Explorer</category>
+        
+        <category>trident</category>
+        
+        
+        <category>Internet Explorer</category>
+        
+      </item>
+    
+      <item>
+        <title>HMV: &quot;Don't make large orders&quot;!</title>
+        <description>&lt;p&gt;HMV’s recent sale has had some great offers on albums from £2.99! I decided to take advantage, making an order for a total of 7 CDs from their web site.&lt;/p&gt;
+
+&lt;p&gt;Next time, I think I’ll give the HMV site a miss as their billing policy boils down to spamming your account with separate transactions for each item. For me this was picked up by my bank as suspicious activity, resulting in my card being blocked and being unable to access my account for 48 hours!&lt;/p&gt;
+
+&lt;p&gt;I was rather surprised to find this policy confirmed by customer services and the site’s help section. When I informed them that their actions had resulted in my card being blocked I was met with the reply, “Yes, that can happen”. The call was concluded when I was informed that “yes, you should avoid making large orders from our website”!&lt;/p&gt;
+
+&lt;p&gt;It continues to amaze me that the largest high street retailers can get things so wrong on their websites and, in this case, be so reckless and irresponsible with their customers accounts. Furthermore, when alerted to this serious problem, why do they seem completely indifferent with no intention to fix the issue?&lt;/p&gt;
+</description>
+        <pubDate>Thu, 09 Jul 2009 08:50:25 +0100</pubDate>
+        <link>https://www.renyard.co.uk/2009/07/hmv-dont-make-large-orders.html</link>
+        <guid isPermaLink="true">https://www.renyard.co.uk/2009/07/hmv-dont-make-large-orders.html</guid>
+        
+        <category>customer service</category>
+        
+        <category>e-Commerce</category>
+        
+        <category>security</category>
+        
+        
+        <category>e-Commerce</category>
+        
+      </item>
+    
+      <item>
+        <title>CSS 3 RGBa Colour Support</title>
+        <description>&lt;p&gt;Developers have long been using PNGs to create semi-transparent backgrounds showing content through from underneath.  There are, however, a number of disadvantages to this technique.  It causes another HTTP request to the server, sometimes causing the page to be, momentarily, unreadable if the background colour does not work well with the text colour and, of course, IE6’s lack of native support for semi-transparency in PNG24 or PNG8.&lt;/p&gt;
+
+&lt;p&gt;CSS 3 introduces RGBa colours, which enable alpha transparency in any rule which usually accepts an RGB colour and simply extends the same syntax.  Currently a solid red background would be set:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;background-color:rbg(255,0,0);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This can now be given an alpha transparency by defining the colour as rgba and simply adding an opacity value on to the end:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;background-color:rbga(255,0,0,0.8);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The above gives a solid red background with 80% opacity.  If you’re using a browser with CSS 3 RGBa support, you’ll be able to see an example below set against a black and white background.&lt;/p&gt;
+
+&lt;style type=&quot;text/css&quot;&gt;
+.black {
+background-color:rgb(0,0,0);
+}
+.red	{
+background-color:rgba(255,0,0,0.8);
+}
+&lt;/style&gt;
+
+&lt;div class=&quot;black&quot; style=&quot;width:300px; height:150px;&quot;&gt;
+&lt;div class=&quot;red&quot; style=&quot;position:relative; left:150px; width:300px; height:150px;&quot;&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code&gt;&lt;br /&gt;
+&amp;lt;style type=&quot;text/css&quot;&amp;gt;&lt;br /&gt;
+.black {&lt;br /&gt;
+background-color:rgb(0,0,0);&lt;br /&gt;
+}&lt;br /&gt;
+.red	{&lt;br /&gt;
+background-color:rgba(255,0,0,0.8);&lt;br /&gt;
+}&lt;br /&gt;
+&amp;lt;/style&amp;gt;&lt;br /&gt;
+&amp;lt;div class=&quot;black&quot; style=&quot;width:300px; height:150px;&quot;&amp;gt;&lt;br /&gt;
+&amp;lt;div class=&quot;red&quot; style=&quot;position:relative; left:150px; width:300px; height:150px;&quot;&amp;gt;&lt;br /&gt;
+&amp;lt;/div&amp;gt;&lt;br /&gt;
+&amp;lt;/div&amp;gt;&lt;br /&gt;
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;browser-support&quot;&gt;Browser Support&lt;/h3&gt;
+
+&lt;p&gt;Firefox and Safari introduced support for RGBa colours with version 3, both of which are relatively mature in the market.  Opera has added support in version 10, which is currently in beta, and, being based on webkit, Chrome has had support from the word go.&lt;/p&gt;
+
+&lt;p&gt;Notably absent from the party is Internet Explorer, so is all this effort wasted if we still need to provide the old semi-transparent PNG in order for large swathes of our users to see all this swishy transparency?&lt;/p&gt;
+
+&lt;p&gt;Luckily for us, IE supports a proprietary filter which we can use as a workaround to give an identical effect and has done since version 6!  The gradient filter requires a start and end colour in RGBa hex format.  By using the same colour as a start and end, we can create a solid background with the semi-transparency preserved:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;filter:progid:DXImageTransform.Microsoft.Gradient(startColorStr=#ccff0000,endColorStr=#ccff0000);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see from the example, one thing to note here is that alpha value here comes first.  If you’re view this in IE, you should be able to see my &lt;span style=&quot;text-decoration: line-through;&quot;&gt;beautiful&lt;/span&gt; example below&lt;/p&gt;
+
+&lt;style type=&quot;text/css&quot;&gt;
+.black2 {
+background-color:rgb(0,0,0);
+}
+.red2	{
+background-color:rgba(255,0,0,0.8);
+}
+&lt;/style&gt;
+
+&lt;div class=&quot;black2&quot; style=&quot;width:300px; height:150px;&quot;&gt;
+&lt;div class=&quot;red2&quot; style=&quot;position:relative; left:150px; width:300px; height:150px; filter:progid:DXImageTransform.Microsoft.Gradient(startColorStr=#ccff0000,endColorStr=#ccff0000);&quot;&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code&gt;&lt;br /&gt;
+&amp;lt;style type=&quot;text/css&quot;&amp;gt;&lt;br /&gt;
+.black {&lt;br /&gt;
+background-color:rgb(0,0,0);&lt;br /&gt;
+}&lt;br /&gt;
+.red	{&lt;br /&gt;
+background-color:rgba(255,0,0,0.8);&lt;br /&gt;
+}&lt;br /&gt;
+&amp;lt;/style&amp;gt;&lt;br /&gt;
+&amp;lt;!--[IF IE]&amp;gt;&lt;br /&gt;
+&amp;lt;style type=&quot;text/css&quot;&amp;gt;&lt;br /&gt;
+.red	{&lt;br /&gt;
+filter:progid:DXImageTransform.Microsoft.Gradient(startColorStr=#ccff0000,endColorStr=#ccff0000);&lt;br /&gt;
+}&lt;br /&gt;
+&amp;lt;style&amp;gt;&lt;br /&gt;
+&amp;lt;![ENDIF]--&amp;gt;&lt;br /&gt;
+&amp;lt;div class=&quot;black&quot; style=&quot;width:300px; height:150px;&quot;&amp;gt;&lt;br /&gt;
+&amp;lt;div class=&quot;red&quot; style=&quot;position:relative; left:150px; width:300px; height:150px;&quot;&amp;gt;&lt;br /&gt;
+&amp;lt;/div&amp;gt;&lt;br /&gt;
+&amp;lt;/div&amp;gt;&lt;br /&gt;
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;the-end-of-1x1-transparent-pngs&quot;&gt;The End of 1x1 transparent PNGs?&lt;/h3&gt;
+
+&lt;p&gt;So, does this mean we can finally implement semi-transparent backgrounds to our content without those pesky PNGs?  As always, it all depends on the browser share and needs of your individual site, but according to &lt;a href=&quot;http://marketshare.hitslink.com/browser-market-share.aspx?qprid=2&amp;amp;qpmr=40&amp;amp;qpdt=1&amp;amp;qpct=3&amp;amp;qpcal=1&amp;amp;qptimeframe=M&amp;amp;qpsp=124&amp;amp;qpnp=1&quot;&gt;Net Applications report from May 2009&lt;/a&gt;, over 90% of users are running a browser capable of CSS 3 or filter based RGBa background colours.&lt;/p&gt;
+
+&lt;p&gt;In most situations, a semi-transparent background is used to make text easier to read on a more complex background.  In this case it would usually be acceptable to gracefully degrade those browsers to a solid background colour and forgo the PNG altogether.  Just add an RGB background colour before the RGBa colour and give IE a transparent background as it will use it’s own filter instead:&lt;/p&gt;
+
+&lt;style type=&quot;text/css&quot;&gt;
+.black3 {
+background-color:rgb(0,0,0);
+}
+.red3	{
+background-color:rgb(255,0,0);
+background-color:rgba(255,0,0,0.8);
+}
+&lt;/style&gt;
+
+&lt;p&gt;&lt;!--[IF IE]&gt;&lt;/p&gt;
+&lt;style type=&quot;text/css&quot;&gt;
+div.red3	{&lt;br /&gt;
+background:transparent !important;&lt;br /&gt;
+filter:progid:DXImageTransform.Microsoft.Gradient(startColorStr=#ccff0000,endColorStr=#ccff0000);&lt;br /&gt;
+}&lt;br /&gt;
+&lt;/style&gt;
+&lt;p&gt;&lt;!--&lt; ![ENDIF]--&gt;&lt;/p&gt;
+&lt;div class=&quot;black3&quot; style=&quot;width:300px; height:150px;&quot;&gt;
+&lt;div class=&quot;red3&quot; style=&quot;position:relative; left:150px; width:300px; height:150px;&quot;&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;&lt;br /&gt;
+&amp;lt;style type=&quot;text/css&quot;&amp;gt;&lt;br /&gt;
+.black {&lt;br /&gt;
+background-color:rgb(0,0,0);&lt;br /&gt;
+}&lt;br /&gt;
+.red	{&lt;br /&gt;
+background-color:rgb(255,0,0);&lt;br /&gt;
+background-color:rgba(255,0,0,0.8);&lt;br /&gt;
+}&lt;br /&gt;
+&amp;lt;/style&amp;gt;&lt;br /&gt;
+&amp;lt;!--[IF IE]&amp;gt;&lt;br /&gt;
+&amp;lt;style type=&quot;text/css&quot;&amp;gt;&lt;br /&gt;
+.red	{&lt;br /&gt;
+background-color:transparent;&lt;br /&gt;
+filter:progid:DXImageTransform.Microsoft.Gradient(startColorStr=#ccff0000,endColorStr=#ccff0000);&lt;br /&gt;
+}&lt;br /&gt;
+&amp;lt;style&amp;gt;&lt;br /&gt;
+&amp;lt;![ENDIF]--&amp;gt;&lt;br /&gt;
+&amp;lt;div class=&quot;black&quot; style=&quot;width:300px; height:150px;&quot;&amp;gt;&lt;br /&gt;
+&amp;lt;div class=&quot;red&quot; style=&quot;position:relative; left:150px; width:300px; height:150px;&quot;&amp;gt;&lt;br /&gt;
+&amp;lt;/div&amp;gt;&lt;br /&gt;
+&amp;lt;/div&amp;gt;&lt;br /&gt;
+&lt;/code&gt;&lt;/p&gt;
+</description>
+        <pubDate>Tue, 23 Jun 2009 21:39:54 +0100</pubDate>
+        <link>https://www.renyard.co.uk/2009/06/css-3-rgba-colour-support.html</link>
+        <guid isPermaLink="true">https://www.renyard.co.uk/2009/06/css-3-rgba-colour-support.html</guid>
+        
+        <category>alpha transparency</category>
+        
+        <category>CSS</category>
+        
+        <category>css3</category>
+        
+        <category>filter</category>
+        
+        <category>gecko</category>
+        
+        <category>ie</category>
+        
+        <category>opera</category>
+        
+        <category>RGBa</category>
+        
+        <category>trident</category>
+        
+        <category>w3c</category>
+        
+        <category>webkit</category>
+        
+        
+        <category>CSS</category>
+        
+      </item>
+    
+  </channel>
+</rss>

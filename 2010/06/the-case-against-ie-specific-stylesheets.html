@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>The Case Against IE Specific Stylesheets</title>
+
+  <meta name="description" content="In all but the most basic of web site designs developers will invariably encounter situations where Internet Explorer requires a good kick in the CSS before ...">
+
+  <link rel="stylesheet" href="/css/main.min.css">
+
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+  <link rel="canonical" href="https://www.renyard.co.uk/2010/06/the-case-against-ie-specific-stylesheets.html">
+  <link rel="alternate" type="application/rss+xml" title="Ian Renyard" href="https://www.renyard.co.uk/feed.xml">
+</head>
+
+<header class="container">
+
+  <nav class="navbar navbar-full navbar-dark bg-inverse">
+    <a class="navbar-brand" href="/">Ian Renyard</a>
+
+    <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#navCollapse">
+      &#9776;
+    </button>
+    <ul class="nav navbar-nav collapse navbar-toggleable-xs" id="navCollapse">
+      
+        
+          <li class="nav-item active">
+            <a class="nav-link" href="/blog/">Blog</a>
+          </li>
+        
+      
+        
+      
+        
+      
+        
+          <li class="nav-item active">
+            <a class="nav-link" href="/projects/">Side Projects</a>
+          </li>
+        
+      
+      
+    </ul>
+  </nav>
+
+</header>
+
+
+<article class="post container" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+    <h1 class="post-title" itemprop="name headline">The Case Against IE Specific Stylesheets</h1>
+    <p class="post-meta"><time datetime="2010-06-30T09:11:34+01:00" itemprop="datePublished">Jun 30, 2010</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Ian Renyard</span></span> • <a href="https://www.renyard.co.uk/2010/06/the-case-against-ie-specific-stylesheets.html#disqus_thread">Comments</a></p>
+
+    <a href="https://twitter.com/share" class="twitter-share-button" data-via="renyard">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script> 
+
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.5";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+    <div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button"></div>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>In all but the most basic of web site designs developers will invariably encounter situations where Internet Explorer requires a good kick in the CSS before it’ll render the page in the desired way.  Often, a quick fix is applied in the shape of an IE specific external stylesheet, hidden from other browsers with conditional comments:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;!--[if IE]&gt;&lt;link href="ie.css" type="text/css" rel="stylesheet" /&gt;&lt;![endif]--&gt;
+</code></pre></div></div>
+
+<p>This does the job, but there are a number of down sides to this approach, which in my opinion, make it the wrong choice in many circumstances for both user experience and code maintainability.</p>
+
+<p>The main reasons for using conditional stylesheets are to avoid CSS hacks and create a smaller code footprint for standards compliant browsers.  But are these really problems that need fixing?</p>
+
+<h2 id="validation">Validation</h2>
+
+<p>HTML validation is good practice, mainly due to a loss in semantic meaning as well as the lack of consistency with regard to error handling in the standards and implementations.  However, CSS is purely presentational and does not convey any semantic meaning.  Furthermore, the original CSS standard defines strict parsing rules which dictate exactly how to deal with invalid rules.  Well tested and widely used hacks such as the * and _ hacks are extremely unlikely to cause problems in standards compliant browsers.</p>
+
+<p>Invalid CSS hidden from modern browsers and the validator is still just that - invalid CSS.  Hiding invalid code within conditional comments does not make it valid, it merely prevents subsets of the code from being validated.</p>
+
+<h2 id="performance">Performance</h2>
+
+<p>While standards compliant browsers will be spared the IE specific rules in conditional stylesheets, Internet Explorer users will incur code bloat, in the shape of duplicated selectors, as well as an extra HTTP request.  This extra request may also delay the loading of other resources on the page as IE7 and below will only download 2 resources in parallel (http://support.microsoft.com/kb/282402).</p>
+
+<p>If these hacks are included in the main stylesheet, standards compliant browsers will take a small hit in terms of download size, but with a bit of care this should be negligible.  However, Internet Explorer users, the majority for most sites, will see a small benefit.</p>
+
+<h2 id="maintainability">Maintainability</h2>
+
+<p>For the developer, IE specific stylesheets can cause issues when trying to trace the origin of CSS rules applied to a particular element. I tend to use Chrome’s developer tools to quickly trace the rule back to file and line number, but this method quickly leads to a wild goose chase when IE specific styles come into play. Including IE specific rules side by side with other rules makes it immediatly obvious where they are used and enables the use of any dev tool, such as Chrome or Firebug’s DOM inspector, to trace the origin of a particular rule.  I also use comments to make it even clearer what rule the hack is emulating as below:</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">#container</span> <span class="p">{</span>
+  <span class="nl">min-height</span><span class="p">:</span> <span class="m">150px</span><span class="p">;</span>
+  <span class="c">/*min*/</span><span class="py">_height</span><span class="p">:</span> <span class="m">150px</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>After dropping IE specific stylesheets in favour of the * and _ hacks for my last few projects, I see fewer and fewer compelling reasons to go back to the so called good practice of IE specific styles.  In fact, I find IE specific stylesheets encourage bad practice - when faced with a rather empty looking, I am tempted to add a quick hack to it rather than tackle the real problem!</p>
+
+  </div>
+
+  <div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+  this.page.url = 'https://www.renyard.co.uk/2010/06/the-case-against-ie-specific-stylesheets.html'; // Replace PAGE_URL with your page's canonical URL variable
+  this.page.identifier = '/2010/06/the-case-against-ie-specific-stylesheets'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+
+s.src = '//renyard.disqus.com/embed.js';
+
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+</article>
+
+
+<footer class="container">
+<nav class="navbar navbar-full navbar-dark bg-inverse">
+  <ul class="nav navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" href="https://github.com/renyard">
+        <span class="fa fa-github"></span>
+        GitHub
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="https://www.linkedin.com/in/renyard">
+        <span class="fa fa-linkedin"></span>
+        LinkedIn
+      </a>
+    </li>
+  </ul>
+</nav>
+</footer>
+
+<script>
+  // Bootstrap tooltips require Tether and Bootstrap errors on load without it.
+  // Stub window.Tether to prevent the error.
+  window.Tether = function() {};
+</script>
+
+<script src="/js/lib.min.js"></script>
+
+
+<script id="dsq-count-scr" src="//renyard.disqus.com/count.js" async></script>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>SSL on GitHub Pages with CloudFlare</title>
+
+  <meta name="description" content="Implementing SSL on GitHub Pages hosted sites.">
+
+  <link rel="stylesheet" href="/css/main.min.css">
+
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+  <link rel="canonical" href="https://www.renyard.co.uk/2016/03/github-pages-cloudflare-ssl.html">
+  <link rel="alternate" type="application/rss+xml" title="Ian Renyard" href="https://www.renyard.co.uk/feed.xml">
+</head>
+
+<header class="container">
+
+  <nav class="navbar navbar-full navbar-dark bg-inverse">
+    <a class="navbar-brand" href="/">Ian Renyard</a>
+
+    <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#navCollapse">
+      &#9776;
+    </button>
+    <ul class="nav navbar-nav collapse navbar-toggleable-xs" id="navCollapse">
+      
+        
+          <li class="nav-item active">
+            <a class="nav-link" href="/blog/">Blog</a>
+          </li>
+        
+      
+        
+      
+        
+      
+        
+          <li class="nav-item active">
+            <a class="nav-link" href="/projects/">Side Projects</a>
+          </li>
+        
+      
+      
+    </ul>
+  </nav>
+
+</header>
+
+
+<article class="post container" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <div class="postimage" style="background-image: url(/images/background/padlock.jpg);"></div>
+    
+    <h1 class="post-title" itemprop="name headline">SSL on GitHub Pages with CloudFlare</h1>
+    <p class="post-meta"><time datetime="2016-03-13T00:00:00+00:00" itemprop="datePublished">Mar 13, 2016</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Ian Renyard</span></span> • <a href="https://www.renyard.co.uk/2016/03/github-pages-cloudflare-ssl.html#disqus_thread">Comments</a></p>
+
+    <a href="https://twitter.com/share" class="twitter-share-button" data-via="renyard">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script> 
+
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.5";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+    <div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button"></div>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>With online security constantly in the news and more and more web services moving to secure connections only, users are starting to expect sites to offer SSL as a default. For sites which request user data or payment information, the need for security is obvious, but to a lesser extent it’s also advantageous for static sites and blogs.</p>
+
+<h2 id="why-use-ssl-for-static-sites">Why Use SSL For Static Sites?</h2>
+
+<p>If your site is not requesting user data or payment information, the main advantage to implementing SSL is to mitigate the risk of man in the middle attacks. Even for a static site, there are risks to being open to a MITM attack.</p>
+
+<p>A MITM has the ability to add arbitrary code to your site. This technique can (and has) been used by WiFi providers, mobile carriers and internet service providers to include ads, promotional messaging or user tracking on third party sites. With SSL enabled, it is not possible for the MITM to make changes to the code delivered to the user’s browser.</p>
+
+<h2 id="what-options-are-available-for-ssl-on-github-pages">What Options Are Available For SSL on GitHub Pages?</h2>
+
+<p>Out of the box, sites hosted on GitHub Pages can be loaded over HTTPS, but will only present a valid certificate when being served over the <em>username</em>.github.io domain. If you’re using a custom domain, you’ll need another solution.</p>
+
+<p>For this site, I’ve used <a href="https://cloudflare.com">CloudFlare</a> to host my DNS and provide CDN facilities. As part of this they also offer SSL between them and the end user. This means CloudFlare will fetch the files from your site insecurely over HTTP or over HTTPS without validating the github.io certificate and serve them to your users over a trusted SSL connection.</p>
+
+<h2 id="setup">Setup</h2>
+
+<p>Once you’ve added your domain to your CloudFlare account, enabling SSL is as simple as switching it on in the crypto area of the account dashboard. There are several options, but for GitHub Pages based sites which cannot serve a valid certificate for your domain, the “Full” option will give you the best balance of security and functionality.</p>
+
+<h2 id="pros-and-cons-of-this-setup">Pros and Cons of this Setup</h2>
+
+<p>It should be noted that this setup doesn’t provide full end-to-end encryption between the user and your site, meaning that the connection between CloudFlare and your site should not be considered secure. Therefore this is not suitable for any site that requests user data or logins, but on static GitHub Pages sites, this shouldn’t be a problem.</p>
+
+<p>For static sites though, I’d say this trade off is preferable to having no SSL at all. It provides a level of trust that the page has not been tampered with and provides protection at the stage where a MITM is most likely to be situated.</p>
+
+<p>Browser support is another area that you should be aware of before implementing CloudFlare’s SSL. The certificates provided on the free tier do not support many older browsers, including Internet Explorer on Windows XP and any Android device older than Ice Cream Sandwich. This roughly means that any major browser released since 2010 should be fine. Depending on your userbase and browser support policy, this may or may not be acceptable.</p>
+
+<p>While this setup is not going to be suitable for all sites, it’s a quick, easy and free way to implement basic SSL for a small blog or static site and is ideal for sites hosted on GitHub Pages.</p>
+
+  </div>
+
+  <div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+  this.page.url = 'https://www.renyard.co.uk/2016/03/github-pages-cloudflare-ssl.html'; // Replace PAGE_URL with your page's canonical URL variable
+  this.page.identifier = '/2016/03/github-pages-cloudflare-ssl'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+
+s.src = '//renyard.disqus.com/embed.js';
+
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+</article>
+
+
+<footer class="container">
+<nav class="navbar navbar-full navbar-dark bg-inverse">
+  <ul class="nav navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" href="https://github.com/renyard">
+        <span class="fa fa-github"></span>
+        GitHub
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="https://www.linkedin.com/in/renyard">
+        <span class="fa fa-linkedin"></span>
+        LinkedIn
+      </a>
+    </li>
+  </ul>
+</nav>
+</footer>
+
+<script>
+  // Bootstrap tooltips require Tether and Bootstrap errors on load without it.
+  // Stub window.Tether to prevent the error.
+  window.Tether = function() {};
+</script>
+
+<script src="/js/lib.min.js"></script>
+
+
+<script id="dsq-count-scr" src="//renyard.disqus.com/count.js" async></script>
